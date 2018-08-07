@@ -75,7 +75,6 @@ class _RPN(nn.Module):
         cfg_key = 'TRAIN' if self.training else 'TEST'
 
         '''
-
         Proposal Layer
 
         Transform the anchors according to the bounding box 
@@ -83,7 +82,6 @@ class _RPN(nn.Module):
         Then prune the number of anchors by applying non-maximum 
         suppression using the probability of an anchor being a
         foreground region
-
         '''
         rois = self.RPN_proposal((rpn_cls_prob.data, rpn_bbox_pred.data,
                                  im_info, cfg_key))
@@ -96,21 +94,17 @@ class _RPN(nn.Module):
             assert gt_boxes is not None
 
             '''
-
             Anchor Target Layer
 
             The goal of the anchor target layer is to produce 
             a set of "good" anchors and the corresponding 
             foreground/background labels and target regression
             coefficients to train the Region Proposal Network.
-
             '''
 
             rpn_data = self.RPN_anchor_target((rpn_cls_score.data, gt_boxes, im_info, num_boxes))
 
-
             '''
-            
             RPN Loss 
 
             The RPN loss function is the metric that is minimized during
@@ -120,9 +114,7 @@ class _RPN(nn.Module):
                correctly classified as foreground/background.
              - Some distance measure betweenn the predicted and target 
                regression coefficients.
-
             '''
-
 
             # compute classification loss
             rpn_cls_score = rpn_cls_score_reshape.permute(0, 2, 3, 1).contiguous().view(batch_size, -1, 2)

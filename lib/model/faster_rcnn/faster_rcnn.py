@@ -49,6 +49,15 @@ class _fasterRCNN(nn.Module):
         # feed base feature map tp RPN to obtain rois
         rois, rpn_loss_cls, rpn_loss_bbox = self.RCNN_rpn(base_feat, im_info, gt_boxes, num_boxes)
 
+        '''
+        Proposal Target Layer
+
+        The goal of the proposal target layer is to prune the 
+        list of anchors produced by the proposal layer and produce 
+        class specific bounding box regression targets that
+        can be used to train the classification layer to produce
+        good class labels and regression targets.
+        '''
         # if it is training phrase, then use ground trubut bboxes for refining
         if self.training:
             roi_data = self.RCNN_proposal_target(rois, gt_boxes, num_boxes)
@@ -68,6 +77,16 @@ class _fasterRCNN(nn.Module):
 
         rois = Variable(rois)
         # do roi pooling based on predicted rois
+
+        '''
+        ROI Pooling Layer
+    
+        Implements a spatial transformation network that samples the
+        input feature map given the bounding box coordinates of the
+        region proposals produced by the proposal target layer. These
+        coordinates will generally not lie on integer boundaris, thus
+        interpolation based sampling is required.
+        '''
 
         if cfg.POOLING_MODE == 'crop':
             # pdb.set_trace()
